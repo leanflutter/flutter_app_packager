@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter_app_packager/src/api/make_error.dart';
@@ -29,6 +30,7 @@ class MakeConfig {
   Version get appVersion => pubspec.version!;
   String get appBuildName => appVersion.toString().split('+').first;
   String get appBuildNumber => appVersion.toString().split('+').last;
+  String? get arch => Abi.current().architecture?.name;
 
   Pubspec? _pubspec;
   Directory? _packagingDirectory;
@@ -69,6 +71,7 @@ class MakeConfig {
       'platform': platform,
       'flavor': flavor,
       'channel': channel,
+      'arch': arch,
       'ext': packageFormat.isEmpty ? null : packageFormat,
     };
 
@@ -186,4 +189,66 @@ class MakeLinuxPackageConfig extends MakeConfig {
     }
     return _appBinaryName!;
   }
+}
+
+extension _AbiArch on Abi {
+  _Architecture? get architecture {
+    switch (this) {
+      case Abi.androidArm:
+        return _Architecture.arm;
+      case Abi.androidArm64:
+        return _Architecture.arm64;
+      case Abi.androidIA32:
+        return _Architecture.ia32;
+      case Abi.androidX64:
+        return _Architecture.x64;
+      case Abi.androidRiscv64:
+        return _Architecture.riscv64;
+      case Abi.fuchsiaArm64:
+        return _Architecture.arm64;
+      case Abi.fuchsiaX64:
+        return _Architecture.x64;
+      case Abi.fuchsiaRiscv64:
+        return _Architecture.riscv64;
+      case Abi.iosArm:
+        return _Architecture.arm;
+      case Abi.iosArm64:
+        return _Architecture.arm64;
+      case Abi.iosX64:
+        return _Architecture.x64;
+      case Abi.linuxArm:
+        return _Architecture.arm;
+      case Abi.linuxArm64:
+        return _Architecture.arm64;
+      case Abi.linuxIA32:
+        return _Architecture.ia32;
+      case Abi.linuxX64:
+        return _Architecture.x64;
+      case Abi.linuxRiscv32:
+        return _Architecture.riscv32;
+      case Abi.linuxRiscv64:
+        return _Architecture.riscv64;
+      case Abi.macosArm64:
+        return _Architecture.arm64;
+      case Abi.macosX64:
+        return _Architecture.x64;
+      case Abi.windowsArm64:
+        return _Architecture.arm64;
+      case Abi.windowsIA32:
+        return _Architecture.ia32;
+      case Abi.windowsX64:
+        return _Architecture.x64;
+      default:
+        return null;
+    }
+  }
+}
+
+enum _Architecture {
+  arm,
+  arm64,
+  ia32,
+  x64,
+  riscv32,
+  riscv64,
 }
