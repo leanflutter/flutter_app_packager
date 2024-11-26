@@ -8,6 +8,7 @@ environment:
 
 dependencies:
   archive: ^3.6.1
+  image: ^4.2.0
   io: ^1.0.3
   liquid_engine: ^0.2.2
   msix: ^3.16.6

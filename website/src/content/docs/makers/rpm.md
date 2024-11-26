@@ -18,6 +18,7 @@ Install requirements:
 Add `make_config.yaml` to your project `linux/packaging/rpm` directory.
 
 ```yaml
+package_name: hello-world
 icon: assets/logo.png
 summary: A really cool application
 group: Application/Emulator

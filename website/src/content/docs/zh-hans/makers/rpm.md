@@ -18,6 +18,7 @@ title: RPM
 将 `make_config.yaml` 添加到您的项目 `linux/packaging/rpm` 目录。
 
 ```yaml
+package_name: hello-world
 icon: assets/logo.png
 summary: A really cool application
 group: Application/Emulator

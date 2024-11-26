@@ -27,6 +27,7 @@ mv appimagetool /usr/local/bin/
 将 `make_config.yaml` 添加到您的项目 `linux/packaging/appimage` 目录。
 
 ```yaml
+package_name: hello_world
 display_name: Hello World
 
 icon: assets/logo.png

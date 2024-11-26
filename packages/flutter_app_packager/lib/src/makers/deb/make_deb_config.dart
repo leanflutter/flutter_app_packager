@@ -7,6 +7,7 @@ import 'package:flutter_app_packager/src/api/app_package_maker.dart';
 # the name used to display in the OS. Specifically desktop
 # entry name
 display_name: Hola Amigos
+include_build_number: true
 
 # package name for debian/apt repository
 # the name should be all lowercase with -+.
@@ -126,6 +127,7 @@ class MakeDebConfig extends MakeLinuxPackageConfig {
     required this.installedSize,
     required this.maintainer,
     this.startupNotify = true,
+    this.includeBuildNumber = true,
     this.essential = false,
     List<String>? postinstallScripts,
     List<String>? postuninstallScripts,
@@ -155,6 +157,7 @@ class MakeDebConfig extends MakeLinuxPackageConfig {
 
   factory MakeDebConfig.fromJson(Map<String, dynamic> map) {
     return MakeDebConfig(
+      includeBuildNumber: map['include_build_number'] as bool? ?? true,
       displayName: map['display_name'],
       packageName: map['package_name'],
       maintainer:
@@ -224,6 +227,7 @@ class MakeDebConfig extends MakeLinuxPackageConfig {
     );
   }
 
+  bool includeBuildNumber;
   String displayName;
   String packageName;
   String maintainer;
@@ -271,7 +275,7 @@ class MakeDebConfig extends MakeLinuxPackageConfig {
       'CONTROL': {
         'Maintainer': maintainer,
         'Package': packageName,
-        'Version': appVersion.toString(),
+        'Version': includeBuildNumber ? appVersion.toString() : appBuildName,
         'Section': section,
         'Priority': priority,
         'Architecture': _getArchitecture(),
@@ -295,7 +299,6 @@ class MakeDebConfig extends MakeLinuxPackageConfig {
       }..removeWhere((key, value) => value == null),
       'DESKTOP': {
         'Type': 'Application',
-        'Version': appVersion.toString(),
         'Name': displayName,
         'GenericName': genericName,
         'Icon': appBinaryName,

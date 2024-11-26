@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_app_packager/src/api/app_package_maker.dart';
 import 'package:flutter_app_packager/src/makers/appimage/make_appimage_config.dart';
+import 'package:image/image.dart' as img;
 import 'package:path/path.dart' as path;
 import 'package:shell_executor/shell_executor.dart';
 
@@ -116,38 +117,28 @@ class AppPackageMakerAppImage extends AppPackageMaker {
         ),
       );
 
-      final icon256x256 = path.join(
-        makeConfig.packagingDirectory.path,
-        '${makeConfig.appName}.AppDir/usr/share/icons/hicolor/256x256/apps',
-      );
-      final icon128x128 = path.join(
-        makeConfig.packagingDirectory.path,
-        '${makeConfig.appName}.AppDir/usr/share/icons/hicolor/128x128/apps',
-      );
+      for (final size in [128, 256, 512]) {
+        final iconDir = path.join(
+          makeConfig.packagingDirectory.path,
+          '${makeConfig.appName}.AppDir/usr/share/icons/hicolor/${size}x$size/apps',
+        );
+        final mkdirProcessRes = await $('mkdir', [
+          '-p',
+          iconDir,
+        ]);
 
-      await $('mkdir', [
-        '-p',
-        icon128x128,
-        icon256x256,
-      ]).then((value) {
-        if (value.exitCode != 0) {
-          throw MakeError(value.stderr as String);
-        }
-      });
+        if (mkdirProcessRes.exitCode != 0) throw MakeError();
 
-      await iconFile.copy(
-        path.join(
-          icon128x128,
-          '${makeConfig.appName}${path.extension(makeConfig.icon)}',
-        ),
-      );
-
-      await iconFile.copy(
-        path.join(
-          icon256x256,
-          '${makeConfig.appName}${path.extension(makeConfig.icon)}',
-        ),
-      );
+        final icon = img.copyResize(
+          img.decodeImage(iconFile.readAsBytesSync())!,
+          width: size,
+          height: size,
+          interpolation: img.Interpolation.average,
+        );
+        final newIconFile =
+            File(path.join(iconDir, '${makeConfig.appBinaryName}.png'));
+        await newIconFile.writeAsBytes(img.encodePng(icon));
+      }
 
       if (makeConfig.metainfo != null) {
         final metainfoDir = path.join(

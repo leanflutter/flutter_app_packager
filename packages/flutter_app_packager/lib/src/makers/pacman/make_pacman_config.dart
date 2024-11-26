@@ -127,7 +127,7 @@ class MakePacmanConfig extends MakeLinuxPackageConfig {
   factory MakePacmanConfig.fromJson(Map<String, dynamic> map) {
     return MakePacmanConfig(
       displayName: map['display_name'],
-      packageName: map['package_name'], //
+      packageName: map['package_name'],
       packageRelease: int.tryParse(map['package_release'] ?? '1') ?? 1,
       maintainer:
           "${map['maintainer']['name']} <${map['maintainer']['email']}>",
@@ -246,7 +246,6 @@ class MakePacmanConfig extends MakeLinuxPackageConfig {
       }..removeWhere((key, value) => value == null),
       'DESKTOP': {
         'Type': 'Application',
-        'Version': appVersion.toString(),
         'Name': displayName,
         'GenericName': genericName,
         'Icon': appBinaryName,

@@ -4,9 +4,11 @@ import 'package:flutter_app_packager/src/api/app_package_maker.dart';
 
 class MakeRPMConfig extends MakeConfig {
   MakeRPMConfig({
+    this.packageName,
     // Desktop file
     required this.displayName,
     this.startupNotify = true,
+    this.includeBuildNumber = true,
     this.actions,
     this.categories,
     this.genericName,
@@ -39,8 +41,10 @@ class MakeRPMConfig extends MakeConfig {
 
   factory MakeRPMConfig.fromJson(Map<String, dynamic> json) {
     return MakeRPMConfig(
+      packageName: json['package_name'] as String?,
       displayName: json['display_name'] as String,
       icon: json['icon'] as String?,
+      includeBuildNumber: json['include_build_number'] as bool? ?? true,
       metainfo: json['metainfo'] as String?,
       genericName: json['generic_name'] as String?,
       startupNotify: json['startup_notify'] as bool?,
@@ -71,6 +75,9 @@ class MakeRPMConfig extends MakeConfig {
     );
   }
 
+  String? packageName;
+
+  bool includeBuildNumber;
   String displayName;
   String? icon;
   String? metainfo;
@@ -104,12 +111,15 @@ class MakeRPMConfig extends MakeConfig {
   String? changelog;
 
   @override
+  String get appName => packageName ?? super.appName;
+
+  @override
   Map<String, dynamic> toJson() {
     return {
       'SPEC': {
         'preamble': {
           'Name': appName,
-          'Version': appVersion.toString(),
+          'Version': includeBuildNumber ? appVersion.toString() : appBuildName,
           'Release':
               "${appVersion.build.isNotEmpty ? appVersion.build.first : "1"}%{?dist}",
           'Summary': summary ?? pubspec.description,
@@ -154,7 +164,6 @@ class MakeRPMConfig extends MakeConfig {
       },
       'DESKTOP': {
         'Type': 'Application',
-        'Version': appVersion.toString(),
         'Name': displayName,
         'GenericName': genericName,
         'Icon': appName,

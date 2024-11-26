@@ -27,6 +27,7 @@ mv appimagetool /usr/local/bin/
 Add `make_config.yaml` to your project `linux/packaging/appimage` directory.
 
 ```yaml
+package_name: hello_world
 display_name: Hello World
 
 icon: assets/logo.png

@@ -32,6 +32,7 @@ class AppImageAction {
 
 class MakeAppImageConfig extends MakeConfig {
   MakeAppImageConfig({
+    this.packageName,
     required this.displayName,
     required this.icon,
     this.keywords = const [],
@@ -45,6 +46,7 @@ class MakeAppImageConfig extends MakeConfig {
   });
   factory MakeAppImageConfig.fromJson(Map<String, dynamic> map) {
     return MakeAppImageConfig(
+      packageName: map['package_name'] as String?,
       displayName: map['display_name'] as String,
       icon: map['icon'] as String,
       metainfo: map['metainfo'] as String?,
@@ -66,6 +68,9 @@ class MakeAppImageConfig extends MakeConfig {
     );
   }
 
+  @override
+  String get appName => packageName ?? super.appName;
+
   final String icon;
   final String? metainfo;
   final List<String> keywords;
@@ -73,6 +78,7 @@ class MakeAppImageConfig extends MakeConfig {
   final List<AppImageAction> actions;
   final bool startupNotify;
   final String genericName;
+  final String? packageName;
   final String displayName;
   final List<String> include;
   List<String>? supportedMimeType;

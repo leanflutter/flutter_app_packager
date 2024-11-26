@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_app_packager/src/api/app_package_maker.dart';
 import 'package:flutter_app_packager/src/makers/deb/make_deb_config.dart';
+import 'package:image/image.dart' as img;
 import 'package:path/path.dart' as path;
 import 'package:shell_executor/shell_executor.dart';
 
@@ -46,18 +47,11 @@ class AppPackageMakerDeb extends AppPackageMaker {
     /// /usr/share/applications
     /// /usr/share/icons/hicolor/128x128/apps
     /// /usr/share/icons/hicolor/256x256/apps
+    /// /usr/share/icons/hicolor/512x512/apps
 
     final debianDir = path.join(packagingDirectory.path, 'DEBIAN');
     final applicationsDir =
         path.join(packagingDirectory.path, 'usr/share/applications');
-    final icon128Dir = path.join(
-      packagingDirectory.path,
-      'usr/share/icons/hicolor/128x128/apps',
-    );
-    final icon256Dir = path.join(
-      packagingDirectory.path,
-      'usr/share/icons/hicolor/256x256/apps',
-    );
     final metainfoDir =
         path.join(packagingDirectory.path, 'usr/share/metainfo');
     final mkdirProcessResult = await $('mkdir', [
@@ -66,7 +60,6 @@ class AppPackageMakerDeb extends AppPackageMaker {
       path.join(packagingDirectory.path, 'usr/share', makeConfig.appBinaryName),
       applicationsDir,
       if (makeConfig.metainfo != null) metainfoDir,
-      if (makeConfig.icon != null) ...[icon128Dir, icon256Dir],
     ]);
 
     if (mkdirProcessResult.exitCode != 0) throw MakeError();
@@ -77,18 +70,28 @@ class AppPackageMakerDeb extends AppPackageMaker {
         throw MakeError("provided icon ${makeConfig.icon} path wasn't found");
       }
 
-      await iconFile.copy(
-        path.join(
-          icon128Dir,
-          makeConfig.appBinaryName + path.extension(makeConfig.icon!),
-        ),
-      );
-      await iconFile.copy(
-        path.join(
-          icon256Dir,
-          makeConfig.appBinaryName + path.extension(makeConfig.icon!),
-        ),
-      );
+      for (final size in [128, 256, 512]) {
+        final iconDir = path.join(
+          packagingDirectory.path,
+          'usr/share/icons/hicolor/${size}x$size/apps',
+        );
+        final mkdirProcessRes = await $('mkdir', [
+          '-p',
+          iconDir,
+        ]);
+
+        if (mkdirProcessRes.exitCode != 0) throw MakeError();
+
+        final icon = img.copyResize(
+          img.decodeImage(iconFile.readAsBytesSync())!,
+          width: size,
+          height: size,
+          interpolation: img.Interpolation.average,
+        );
+        final newIconFile =
+            File(path.join(iconDir, '${makeConfig.appBinaryName}.png'));
+        await newIconFile.writeAsBytes(img.encodePng(icon));
+      }
     }
     if (makeConfig.metainfo != null) {
       final metainfoPath =
