@@ -106,7 +106,7 @@ class AppPackageMakerRPM extends AppPackageMaker {
           file.path,
         ],
       );
-      if (processResult.stdout.toString().contains('/home')) {
+      if (processResult.stdout.toString() != ('$ORIGIN')) {
         await $(
           'patchelf',
           [
