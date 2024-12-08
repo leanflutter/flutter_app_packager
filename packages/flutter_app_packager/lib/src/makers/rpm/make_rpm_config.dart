@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:intl/intl.dart';
 import 'package:flutter_app_packager/src/api/app_package_maker.dart';
 
 class MakeRPMConfig extends MakeConfig {
@@ -105,6 +105,9 @@ class MakeRPMConfig extends MakeConfig {
 
   @override
   Map<String, dynamic> toJson() {
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('EEE MMM dd yyyy').format(now);
+    final rpmVersion = appVersion.toString();
     return {
       'SPEC': {
         'preamble': {
@@ -150,6 +153,7 @@ class MakeRPMConfig extends MakeConfig {
         'inline-body': {
           '%defattr': '(-,root,root)',
           '%attr': '(4755, root, root) %{_datadir}/pixmaps/%{name}.png',
+          '%changelog': '\n* $formattedDate $packager <$packagerEmail> - $rpmVersion\n- $changelog',
         },
       },
       'DESKTOP': {
