@@ -10,12 +10,12 @@ title: AppImage
   ```bash
   $ sudo apt install locate
   ```
-- [AppImageTool](https://github.com/AppImage/AppImageKit)
+- [appimagetool](https://github.com/AppImage/appimagetool)
 
-To install Appimage Builder, run:
+To install appimagetool, run:
 
 ```bash
-wget -O appimagetool "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage"
+wget -O appimagetool "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage"
 chmod +x appimagetool
 mv appimagetool /usr/local/bin/
 ```
@@ -67,7 +67,7 @@ startup_notify: true
 #   - libcurl.so.4
 include: []
 
-# You can also specify [metainfo](https://freedesktop.org/software/appstream/docs/chap-Quickstart.html) file
+# You can also specify [metainfo](https://www.freedesktop.org/software/appstream/metainfocreator/#/) file
 # which contains metadata of the app.
 # metainfo: linux/packaging/myappid.appdata.xml
 ```
@@ -83,3 +83,4 @@ flutter_distributor package --platform linux --targets appimage
 - [Build and release an Linux app](https://docs.flutter.dev/deployment/linux)
 - [Introduction to AppImage package format](https://docs.appimage.org/)
 - [Desktop Entry Specification](https://specifications.freedesktop.org/desktop-entry-spec/desktop-entry-spec-latest.html)
+- [AppStream Metainfo Specification](https://www.freedesktop.org/software/appstream/docs/chap-Metadata.html)
