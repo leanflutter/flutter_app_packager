@@ -20,6 +20,8 @@ display_name: Hello 世界
 create_desktop_icon: true
 # See: https://jrsoftware.org/ishelp/index.php?topic=setup_defaultdirname
 # install_dir_name: "D:\\HELLO-WORLD"
+# 这里的路径是相对于项目根目录的路径； 图标格式必须是ico格式，不能是png或其它
+# setup_icon_file: windows\runner\resources\app_icon.ico
 locales:
   - en
   - zh

@@ -24,6 +24,13 @@ class MakeExeConfig extends MakeConfig {
         json['locales'] != null ? List<String>.from(json['locales']) : null;
     if (locales == null || locales.isEmpty) locales = ['en'];
 
+    // use absolute path
+    String iconfile = '';
+    if (json['setup_icon_file'] != null) {
+      String currentDirectory = Directory.current.path;
+      iconfile = p.join(currentDirectory, json['setup_icon_file']);
+    }
+
     MakeExeConfig makeExeConfig = MakeExeConfig(
       scriptTemplate: json['script_template'],
       appId: json['app_id'] ?? json['appId'],
@@ -34,7 +41,7 @@ class MakeExeConfig extends MakeConfig {
       createDesktopIcon: json['create_desktop_icon'],
       launchAtStartup: json['launch_at_startup'],
       installDirName: json['install_dir_name'],
-      setupIconFile: json['setup_icon_file'],
+      setupIconFile: iconfile,
       privilegesRequired: json['privileges_required'],
       locales: locales,
     );
