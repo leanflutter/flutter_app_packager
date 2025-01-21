@@ -85,9 +85,8 @@ class MakeAppImageConfig extends MakeConfig {
       'Icon': appName,
       'Type': 'Application',
       'StartupNotify': startupNotify ? 'true' : 'false',
-      'MimeType': supportedMimeType != null && supportedMimeType!.isNotEmpty
-          ? '${supportedMimeType!.join(';')};'
-          : null,
+      if (supportedMimeType != null && supportedMimeType!.isNotEmpty)
+        'MimeType': '${supportedMimeType!.join(';')};',
       if (categories.isNotEmpty) 'Categories': categories.join(';'),
       if (keywords.isNotEmpty) 'Keywords': keywords.join(';'),
       if (this.actions.isNotEmpty)
